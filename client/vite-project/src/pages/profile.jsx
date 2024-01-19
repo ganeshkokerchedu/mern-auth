@@ -1,8 +1,9 @@
 import {useState,useRef,useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getDownloadURL,getStorage, ref, uploadBytesResumable} from "firebase/storage";
-import { updateUserFailure,updateUserSuccess,updateUserStart,deleteUserStart,deleteUserFailure,deleteUserSuccess } from "../redux/user/userSlice";
+import { updateUserFailure,updateUserSuccess,updateUserStart,deleteUserStart,deleteUserFailure,deleteUserSuccess , signOut} from "../redux/user/userSlice";
 import {app} from "../firebase";
+
 const profile = () => {
   const [image, setImage] = useState(undefined);
   const fileRef = useRef(null);
@@ -12,7 +13,7 @@ const profile = () => {
   const dispatch = useDispatch();
   
 
-  const {currentUser,loading} = useSelector((state) => state.user)
+  const {currentUser,loading,error} = useSelector((state) => state.user)
   useEffect(() => {
     if (image) {
       handleFileUpload(image);
@@ -101,6 +102,16 @@ const handleDeleteAccount = async () => {
      dispatch(deleteUserFailure(error));
   }
 }
+
+const handleSignOut = async () => {
+  try{
+   await fetch('/api/user/signout');
+   dispatch(signOut());
+  } catch(error){
+    console.log(error);
+
+  }
+}
   console.log(formData);
 
   return (
@@ -135,9 +146,13 @@ const handleDeleteAccount = async () => {
     </form>
     <div className="flex justify-between mt-5">
     <span onClick={handleDeleteAccount} className="text-red-700 curser-pointer">Delete Account</span>
-    <span className="text-red-700 curser-pointer">Sign out</span>
+    <span onClick={handleSignOut} className="text-red-700 curser-pointer">Sign out</span>
 
     </div>
+    <p className="text-red-700 mt-5">{error && "Somthing went wrong!"}</p>
+    <p className="text-green-700 mt-5">
+    {updateUserSuccess && "User is updated successfully!"}
+    </p>
     </div>
     
   )
