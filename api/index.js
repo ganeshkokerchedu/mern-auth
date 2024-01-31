@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import path from "path";
 
 
+
 dotenv.config();
 
 const _dirname = path.resolve();
@@ -31,10 +32,9 @@ app.listen(3000, ()=>{
 });
 
 // Path: api/index.js
-    app.use("/api/user", userRoutes);
-    app.use("/api/auth", authRoutes);
-    app.use("/api/listing", listingRoute);
-
+app.use('/api/user', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/listing', listingRoute);
 
     app.use((err, req,res,next)=>{
       const statusCode = err.statusCode || 500;
