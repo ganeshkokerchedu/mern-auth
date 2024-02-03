@@ -11,6 +11,9 @@ const profile = () => {
   const [imagePercent, setImagePercent] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [formData,setFormData] = useState({});
+  const [showListingsError, setShowListingsError] = useState(false);
+  const [userListings, setUserListings] = useState([]);
+
   const dispatch = useDispatch();
   
 
@@ -106,7 +109,9 @@ const handleDeleteAccount = async () => {
 
 const handleSignOut = async () => {
   try{
-   await fetch('/api/user/signout');
+   await fetch('/api/user/signout',
+   
+   );
    dispatch(signOut());
   } catch(error){
     console.log(error);
@@ -115,12 +120,30 @@ const handleSignOut = async () => {
 }
   console.log(formData);
 
+  const handleShowListings = async () => {
+    try{
+      setShowListingsError(false);
+      const res = await fetch(`/api/user/lising/${currentUser._id}`,{
+        method: "GET"
+      });
+      const data = await res.json();
+      if(data.success === false) {
+        setShowListingsError(true);
+        return;
+      }
+      setUserListings(data);
+    } catch (error){
+      setShowListingsError(true);
+
+    }
+  }
+
   return (
     <div className="p-3 max-w-lg mx-auto">
     <h1 className="text-3xl font-semibold text-center my-7">
        Profile
     </h1>
-    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+    <form className="flex  flex-col gap-4" onSubmit={handleSubmit}>
     <input type="file" ref={fileRef} accept="image/*" className="hidden" onChange={(e)=> setImage(e.target.files[0])}/>
     {/* 
     firebase storage rules:
@@ -155,6 +178,18 @@ const handleSignOut = async () => {
     <p className="text-green-700 mt-5">
     {updateUserSuccess && "User is updated successfully!"}
     </p>
+    <button onClick={handleShowListings} className="text-green-700 w-full">Show Listings</button>
+    <p className="text-red-700 mt-5">{showListingsError ? "Error showing Listings" : ""}</p>
+    {userListings && userListings.length > 0 && 
+        userListings.map((listing) => {
+          <div key={listing._id} className="">
+          <Link to={`/listing/${listing._id}`}>
+           <img src={listing.imageUrls[0]} alt="listing cover" />
+        </Link>
+
+          </div>
+        })
+    }
     </div>
     
   )
