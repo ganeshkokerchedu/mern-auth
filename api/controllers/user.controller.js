@@ -13,7 +13,7 @@ export const test = (req, res) => {
 
 export const updateUser = async (req, res, next) => {
  
-  if  (! req.params.id) {
+  if  (!req.params.id) {
     return next(errorHandler(401, 'You can update only your account!'));
   }
   try {
@@ -54,7 +54,7 @@ export const deleteUser = async (req,res, next) => {
 }
 
 export const getUserListings = async (req, res, next) => {
-  if (req.params.id) {
+ 
     try {
 
       const listings = await Listing.find( {userRef: req.params.id} );
@@ -62,9 +62,7 @@ export const getUserListings = async (req, res, next) => {
     } catch (error) {
       next(error);
     }
-  } else {
-    return next(errorHandler(401, 'You can only view your own listings!'));
-  }
+ 
 
 };
  

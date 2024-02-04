@@ -16,7 +16,7 @@ const _dirname = path.resolve();
 const app = express();
 app.use(cors({
       origin: "http://localhost:3000",
-      optionsSuccessStatus: 200
+      optionsSuccessStatus: 200,
 }));
 app.use(express.static(path.join(_dirname, "/client/dist")))
 app.get("*", (req,res)=>{
